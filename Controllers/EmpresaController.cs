@@ -24,8 +24,10 @@ namespace TesteCSharp.Controllers
         [Route("Insert")]
         public async Task<ActionResult<Empresa>> Insert(Empresa empresa)
         {
+            new EmpresaFacade().CadastroIsValid(empresa);
             await Context.AddAsync(empresa);
             Context.SaveChanges();
+
             return Ok(empresa);
         }
 
@@ -34,7 +36,6 @@ namespace TesteCSharp.Controllers
         public async Task<List<Empresa>> GetAll()
         {
             return await Context.Empresas.ToListAsync();
-            //return Context.Empresas.OrderBy(f => f.ID);
         }
 
         [HttpGet]
@@ -49,7 +50,8 @@ namespace TesteCSharp.Controllers
         public async Task<ActionResult<Empresa>> Update([FromBody] Empresa empresa)
         {
             var empresaToUpdate = await Context.FindAsync<Empresa>(empresa);
-            if (empresaToUpdate != null)
+            var validation = new EmpresaFacade().CadastroIsValid(empresa);
+            if (empresaToUpdate != null && validation == "Cadastro Valido")
             {
                 empresaToUpdate.NomeFantasia = empresa.NomeFantasia;
                 empresaToUpdate.CNPJ = empresa.CNPJ;
@@ -57,6 +59,7 @@ namespace TesteCSharp.Controllers
                 await Context.SaveChangesAsync();
                 return Ok(empresaToUpdate);
             }
+
             return NotFound();
         }
 

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using TesteCSharp.Models;
@@ -21,16 +22,18 @@ namespace TesteCSharp.Controllers
 
         [HttpPost]
         [Route("Insert")]
-        public async Task<ActionResult<Fornecedor>> Insert([FromBody]Fornecedor fornecedor)
+        public async Task<ActionResult<Fornecedor>> Insert([FromBody] Fornecedor fornecedor)
         {
             fornecedor.Empresa = await Context.Empresas.FindAsync(fornecedor.EmpresaID);
+            new FornecedorFacade().CadastroIsValid(fornecedor);
+
             await Context.AddAsync(fornecedor);
             foreach (var item in fornecedor.Telefone)
             {
                 await Context.Telefones.AddAsync(item);
             }
             await Context.SaveChangesAsync();
-              
+
             return Ok(fornecedor);
         }
 
@@ -56,7 +59,8 @@ namespace TesteCSharp.Controllers
             Fornecedor fornecedorToUpdate = await Context.Fornecedores.FindAsync(fornecedor.ID);
             fornecedorToUpdate = fornecedor;
             fornecedorToUpdate.Empresa = await Context.Empresas.FindAsync(fornecedor.EmpresaID);
-            
+            new FornecedorFacade().CadastroIsValid(fornecedorToUpdate);
+
             await Context.SaveChangesAsync();
 
             Telefone currTel = new Telefone();
