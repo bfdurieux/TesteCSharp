@@ -12,9 +12,9 @@ namespace TesteCSharp.Models
         public string CNPJ { get; set; }
     }
 
-    public class EmpresaFacade
+    public static class EmpresaFacade
     {
-        public string CadastroIsValid(Empresa empresa)
+        public static string CadastroIsValid(Empresa empresa)
         {
             if (empresa.UF.Length == 2 && empresa.CNPJ.Replace(@"/\D+/","").Length == 14)
             {

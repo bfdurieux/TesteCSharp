@@ -13,20 +13,19 @@ namespace TesteCSharp.Controllers
     [Route("[Controller]")]
     public class EmpresaController : ControllerBase
     {
-        public TCSContext Context { get; set; }
+        private TCSContext _context { get; set; }
 
         public EmpresaController(TCSContext context)
         {
-            Context = context;
+            _context = context;
         }
 
         [HttpPost]
-        [Route("Insert")]
-        public async Task<ActionResult<Empresa>> Insert(Empresa empresa)
+        public async Task<ActionResult<Empresa>> Insert([FromBody]Empresa empresa)
         {
-            new EmpresaFacade().CadastroIsValid(empresa);
-            await Context.AddAsync(empresa);
-            Context.SaveChanges();
+            EmpresaFacade.CadastroIsValid(empresa);
+            await _context.AddAsync(empresa);
+            await _context.SaveChangesAsync();
 
             return Ok(empresa);
         }
@@ -35,46 +34,44 @@ namespace TesteCSharp.Controllers
         [Route("All")]
         public async Task<List<Empresa>> GetAll()
         {
-            return await Context.Empresas.ToListAsync();
+            return await _context.Empresas.ToListAsync();
         }
 
         [HttpGet]
         [Route("{ID}")]
-        public async Task<Empresa> GetById(int id)
+        public async Task<Empresa> GetById(int ID)
         {
-            return await Context.FindAsync<Empresa>(id);
+            return await _context.FindAsync<Empresa>(ID);
         }
 
         [HttpPut]
-        [Route("{ID}")]
         public async Task<ActionResult<Empresa>> Update([FromBody] Empresa empresa)
         {
-            var empresaToUpdate = await Context.FindAsync<Empresa>(empresa);
-            var validation = new EmpresaFacade().CadastroIsValid(empresa);
-            if (empresaToUpdate != null && validation == "Cadastro Valido")
+            var empresaToUpdate = await GetById(empresa.ID);
+            if (empresaToUpdate != null)
             {
-                empresaToUpdate.NomeFantasia = empresa.NomeFantasia;
-                empresaToUpdate.CNPJ = empresa.CNPJ;
-                empresaToUpdate.UF = empresa.UF;
-                await Context.SaveChangesAsync();
+                empresaToUpdate.NomeFantasia = empresa.NomeFantasia ?? empresaToUpdate.NomeFantasia;
+                empresaToUpdate.CNPJ = empresa.CNPJ ?? empresaToUpdate.CNPJ;
+                empresaToUpdate.UF = empresa.UF ?? empresaToUpdate.UF;
+                EmpresaFacade.CadastroIsValid(empresaToUpdate);
+                await _context.SaveChangesAsync();
                 return Ok(empresaToUpdate);
             }
-
             return NotFound();
         }
 
         [HttpDelete]
         [Route("{ID}")]
-        public async Task<ActionResult<Empresa>> Delete(int id)
+        public async Task<ActionResult<Empresa>> Delete(int ID)
         {
-            var empresaToDelete = await Context.FindAsync<Empresa>(id);
-            if (empresaToDelete == null)
+            var empresaToDelete = await _context.FindAsync<Empresa>(ID);
+            if (empresaToDelete != null)
             {
-                return NotFound();
+                _context.Remove(empresaToDelete);
+                await _context.SaveChangesAsync();
+                return Ok(empresaToDelete);
             }
-            Context.Remove(empresaToDelete);
-            await Context.SaveChangesAsync();
-            return Ok(empresaToDelete);
+            return NotFound();
         }
     }
 }

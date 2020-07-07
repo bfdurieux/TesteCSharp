@@ -15,25 +15,20 @@ namespace TesteCSharp.Models
         public string? RG { get; set; }
         public DateTime? DataNascimento { get; set; }
         public DateTime TimestampCadastro { get; set; }
-        public List<Telefone>? Telefone { get; } = new List<Telefone>();
+        public virtual IEnumerable<Telefone>? Telefone { get; set; }
     }
 
-    public class FornecedorFacade
+    public static class FornecedorFacade
     {
-        public void CadastroIsValid(Fornecedor fornecedor)
+        public static void CadastroIsValid(Fornecedor fornecedor)
         {
-            var registro = fornecedor.NumeroRegistro.Replace(@"/\D+/g", "");
-            if (registro.Length == 11)
+            if (IsPessoaFisica(fornecedor))
             {
                 CadastroPessoaFisicaIsValid(fornecedor);
             }
-            else if (registro.Length != 14)
-            {
-                throw new Exception("Registro Invalido");
-            }
         }
 
-        public void CadastroPessoaFisicaIsValid(Fornecedor fornecedor)
+        public static void CadastroPessoaFisicaIsValid(Fornecedor fornecedor)
         {
             if (fornecedor.Empresa.UF == "PR" && DateTime.Today.AddYears(-18) < fornecedor.DataNascimento)
             {
@@ -44,6 +39,20 @@ namespace TesteCSharp.Models
             {
                 throw new Exception("Fornecedor Pessoa Fisica deve conter RG e Data de Nascimento");
             }
+        }
+
+        public static bool IsPessoaFisica(Fornecedor fornecedor)
+        {
+            var num = fornecedor.NumeroRegistro.Replace(@"/\D+/g", "");
+            if (num.Length == 11)
+            {
+                return true;
+            }
+            else if (num.Length != 14)
+            {
+                throw new Exception("Registro Invalido");
+            }
+            return false;
         }
     }
 }

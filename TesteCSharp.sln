@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30128.74
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TesteCSharp", "TesteCSharp.csproj", "{6317C721-8356-4823-ACE0-ECEE06C97239}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TesteCSharp", "TesteCSharp.csproj", "{6317C721-8356-4823-ACE0-ECEE06C97239}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TCSClient", "TCSClient", "{47D73B5C-E9A4-4B4D-95EB-748D1ECA91E5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -14,25 +14,30 @@ namespace TesteCSharp.Controllers
     [Route("[Controller]")]
     public class FornecedorController : ControllerBase
     {
-        public TCSContext Context { get; set; }
+        private TCSContext _context { get; set; }
         public FornecedorController(TCSContext context)
         {
-            Context = context;
+            _context = context;
         }
 
         [HttpPost]
-        [Route("Insert")]
         public async Task<ActionResult<Fornecedor>> Insert([FromBody] Fornecedor fornecedor)
         {
-            fornecedor.Empresa = await Context.Empresas.FindAsync(fornecedor.EmpresaID);
-            new FornecedorFacade().CadastroIsValid(fornecedor);
+            fornecedor.Empresa = await _context.Empresas.FindAsync(fornecedor.EmpresaID);
+            FornecedorFacade.CadastroIsValid(fornecedor);
 
-            await Context.AddAsync(fornecedor);
-            foreach (var item in fornecedor.Telefone)
+            await _context.AddAsync(fornecedor);
+
+            await _context.SaveChangesAsync();
+            if (fornecedor.Telefone != null)
             {
-                await Context.Telefones.AddAsync(item);
+                foreach (var item in fornecedor.Telefone)
+                {
+                    item.FornecedorID = fornecedor.ID;
+                    await _context.Telefones.AddAsync(item);
+                }
+                await _context.SaveChangesAsync();
             }
-            await Context.SaveChangesAsync();
 
             return Ok(fornecedor);
         }
@@ -41,42 +46,50 @@ namespace TesteCSharp.Controllers
         [Route("{ID}")]
         public async Task<Fornecedor> GetByID(int id)
         {
-            return await Context.FindAsync<Fornecedor>(id);
+            return await _context.FindAsync<Fornecedor>(id);
         }
 
         [HttpGet]
         [Route("All")]
         public async Task<List<Fornecedor>> GetAll()
         {
-            return await Context.Fornecedores.ToListAsync();
+            return await _context.Fornecedores.Include(f => f.Telefone).Include(f => f.Empresa).ToListAsync();
         }
 
 
         [HttpPut]
-        [Route("{ID}")]
-        public async Task<ActionResult<Fornecedor>> Update(Fornecedor fornecedor)
+        public async Task<ActionResult<Fornecedor>> Update([FromBody] Fornecedor fornecedor)
         {
-            Fornecedor fornecedorToUpdate = await Context.Fornecedores.FindAsync(fornecedor.ID);
-            fornecedorToUpdate = fornecedor;
-            fornecedorToUpdate.Empresa = await Context.Empresas.FindAsync(fornecedor.EmpresaID);
-            new FornecedorFacade().CadastroIsValid(fornecedorToUpdate);
+            Fornecedor fornecedorToUpdate = await _context.Fornecedores.FindAsync(fornecedor.ID);
+            fornecedorToUpdate.Empresa = await _context.Empresas.FindAsync(fornecedor.EmpresaID) ?? fornecedorToUpdate.Empresa;
+            fornecedorToUpdate.Nome = fornecedor.Nome ?? fornecedorToUpdate.Nome;
+            fornecedorToUpdate.NumeroRegistro = fornecedor.NumeroRegistro ?? fornecedorToUpdate.NumeroRegistro;
 
-            await Context.SaveChangesAsync();
+            if (FornecedorFacade.IsPessoaFisica(fornecedorToUpdate))
+            {
+                fornecedorToUpdate.DataNascimento = fornecedor.DataNascimento ?? fornecedorToUpdate.DataNascimento;
+                fornecedorToUpdate.RG = fornecedor.RG ?? fornecedorToUpdate.RG;
+            }
+            FornecedorFacade.CadastroIsValid(fornecedorToUpdate);
 
             Telefone currTel = new Telefone();
-            foreach (var item in fornecedorToUpdate.Telefone)
+            if (fornecedor.Telefone != null)
             {
-                currTel = await Context.Telefones.FindAsync(item.ID);
-                if (currTel == null)
+                foreach (var item in fornecedor.Telefone)
                 {
-                    currTel = item;
-                }
-                else
-                {
-                    item.FornecedorID = fornecedorToUpdate.ID;
-                    await Context.Telefones.AddAsync(item);
+                    currTel = await _context.Telefones.FindAsync(item.ID);
+                    if (currTel != null)
+                    {
+                        currTel.NumeroTelefone = item.NumeroTelefone;
+                    }
+                    else
+                    {
+                        item.FornecedorID = fornecedorToUpdate.ID;
+                        await _context.Telefones.AddAsync(item);
+                    }
                 }
             }
+            await _context.SaveChangesAsync();
             return Ok(fornecedorToUpdate);
         }
 
@@ -84,24 +97,19 @@ namespace TesteCSharp.Controllers
         [Route("{ID}")]
         public async Task<ActionResult<Fornecedor>> Delete(int id)
         {
-            Fornecedor fornecedorToDelete = await Context.Fornecedores.FindAsync(id);
-            Context.Fornecedores.Remove(fornecedorToDelete);
-            List<Telefone> telefonesToDelete = (List<Telefone>)Context.Telefones.Where(tel => tel.FornecedorID == id);
-            Context.RemoveRange(telefonesToDelete);
-            await Context.SaveChangesAsync();
-            return Ok(fornecedorToDelete);
+            Fornecedor fornecedorToDelete = await _context.Fornecedores.FindAsync(id);
+            if (fornecedorToDelete != null)
+            {
+                List<Telefone> telefonesToDelete = await _context.Telefones.Where(f => f.FornecedorID == id).ToListAsync();
+                if (telefonesToDelete != null)
+                {
+                    _context.RemoveRange(telefonesToDelete);
+                }
+                _context.Fornecedores.Remove(fornecedorToDelete);
+                await _context.SaveChangesAsync();
+                return Ok(fornecedorToDelete);
+            }
+            return NotFound();
         }
-    }
-
-    public class FornecedorTemp
-    {
-        public int IDFornecedor { get; set; }
-        public List<Telefone> Telefones { get; set; }
-        public int IDEmpresa { get; set; }
-        public string Nome { get; set; }
-        public string RG { get; set; }
-        public string Timestamp { get; set; }
-        public string DataNascimento { get; set; }
-        public string Registro { get; set; }
     }
 }
