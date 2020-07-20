@@ -1,0 +1,42 @@
+<div class="section-container">
+  <!-- <h1>{{ message }}</h1> -->
+  <table class="table table-inverse table-hover">
+    <thead class="thead-dark">
+      <tr>
+        <th>Nome Fantasia</th>
+        <th>UF</th>
+        <th>CNPJ</th>
+
+        <th>
+          <button
+            type="button"
+            class="btn btn-primary btn-sm"
+            (click)="openFormCard()"
+            data-toggle="modal"
+            data-target="#exampleModalCenter"
+          >
+            New
+          </button>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let empresa of empresas">
+        <td>{{ empresa.nomeFantasia }}</td>
+        <td>{{ empresa.uf }}</td>
+        <td>{{ empresa.cnpj }}</td>
+        <td>
+          <button
+            type="button"
+            class="btn btn-outline-secondary btn-sm"
+            data-toggle="modal"
+            data-target="#exampleModalCenter"
+            (click)="openEditCard(empresa)"
+          >
+            Edit
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

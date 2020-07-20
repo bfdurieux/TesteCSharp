@@ -1,0 +1,62 @@
+<div
+  class="modal-header bg-primary text-white"
+  style="border-radius: 0.3rem 0.3rem 0 0;"
+>
+  <h4 class="modal-title">Nova Empresa</h4>
+  <button
+    type="button"
+    class="close btn-outline-dark"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form ngForm>
+  <div class="modal-body modal-dark input-group">
+    <input
+      type="text"
+      class="form-control"
+      ngbAutofocus
+      placeholder="Nome Fantasia"
+      value="{{ empresa.nomeFantasia }}"
+      [(ngModel)]="empresa.nomeFantasia"
+      name="nomeFantasia"
+    />
+
+    <select class="form-control" id="cbUF" [(ngModel)]="empresa.uf" name="uf">
+      <option selected>{{ empresa.uf }}</option>
+      <option *ngFor="let uf of ufList" [value]="uf">{{ uf }}</option>
+    </select>
+    <input
+      type="text"
+      class="form-control"
+      placeholder="CNPJ"
+      aria-label="CNPJ"
+      [(ngModel)]="empresa.cnpj"
+      name="cnpj"
+    />
+  </div>
+  <div class="modal-footer modal-dark pt-0">
+    <button
+      type="button"
+      class="btn btn-secondary btn-sm"
+      (click)="activeModal.close('Close click')"
+    >
+      Close
+    </button>
+    <button type="button" class="btn btn-primary btn-sm" (click)="saveNew()">
+      Save
+    </button>
+    <table>
+      <tbody>
+        <tr *ngFor="let empresa of empresas">
+          <td>{{ empresa.nomeFantasia }}</td>
+          <td>{{ empresa.uf }}</td>
+          <td>{{ empresa.cnpj }}</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</form>

@@ -1,0 +1,23 @@
+@import url("https://fonts.googleapis.com/css2?family=Work+Sans&display=swap");
+
+* {
+  font-family: "Work Sans", sans-serif;
+}
+
+.modal-dark {
+  color: #f7f7f7 !important;
+  background-color: #292b2c !important;
+}
+
+.modal-header {
+  min-height: 16.42857143px;
+  padding: 15px;
+  border-bottom: 1px solid #292b2c !important;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2), 0 3px 6px rgba(0, 0, 0, 0.25) !important;
+}
+
+.modal-footer {
+  padding: 15px;
+  text-align: right;
+  border-top: 1px solid #292b2c !important;
+}
