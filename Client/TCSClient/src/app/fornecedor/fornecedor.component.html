@@ -1,1 +1,24 @@
-<p>fornecedor works!</p>
+<div class="section-container">
+  <table class="table table-inverse table-hover">
+    <thead class="thead-dark">
+      <tr>
+        <th>Nome</th>
+        <th>Registro</th>
+        <th>RG</th>
+        <th>Data Nascimento</th>
+        <th>Telefone</th>
+        <th>Empresa</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let fornecedor of fornecedores">
+        <td>{{ fornecedor.nome }}</td>
+        <td>{{ fornecedor.numeroRegistro }}</td>
+        <td>{{ fornecedor.rg }}</td>
+        <td>{{ fornecedor.dataNascimento | date }}</td>
+        <td>{{ getTelefone(fornecedor.telefone) }}</td>
+        <td>{{ getEmpresaName(fornecedor.empresa) }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

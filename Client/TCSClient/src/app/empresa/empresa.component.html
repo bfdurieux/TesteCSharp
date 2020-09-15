@@ -1,5 +1,4 @@
 <div class="section-container">
-  <!-- <h1>{{ message }}</h1> -->
   <table class="table table-inverse table-hover">
     <thead class="thead-dark">
       <tr>
@@ -39,4 +38,9 @@
       </tr>
     </tbody>
   </table>
+  <app-pagination
+    (goPrev)="goToPrevious()"
+    (goNext)="goToNext()"
+    [page]="page"
+  ></app-pagination>
 </div>

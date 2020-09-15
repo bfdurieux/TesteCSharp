@@ -1,0 +1,17 @@
+<div>
+  <button
+    class="btn btn-sm btn-info"
+    (click)="onPrev()"
+    [disabled]="isDisabledBtnPrev == true"
+  >
+    Previous
+  </button>
+  - {{ page }} -
+  <button
+    class="btn btn-sm btn-info"
+    (click)="onNext()"
+    [disabled]="isDisabledBtnNext == true"
+  >
+    Next
+  </button>
+</div>

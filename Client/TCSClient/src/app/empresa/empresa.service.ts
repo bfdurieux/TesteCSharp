@@ -1,6 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { retry, catchError } from 'rxjs/operators';
 import { Empresa } from '../shared/empresa';
 
 @Injectable({ providedIn: 'root' })
@@ -13,7 +14,9 @@ export class EmpresaService {
   }
 
   getAll(): Observable<Empresa[]> {
-    return this._client.get<Empresa[]>(this.baseURL + 'All');
+    return this._client
+      .get<Empresa[]>(this.baseURL + 'All')
+      .pipe(retry(3), catchError(this.handleError));
   }
 
   getById(id: number): Observable<Empresa> {
@@ -31,43 +34,17 @@ export class EmpresaService {
   delete(id): Observable<{}> {
     return this._client.delete(this.baseURL + id);
   }
+
+  handleError(error: HttpErrorResponse) {
+    var errorMsg: string;
+    if (error instanceof ErrorEvent) {
+      errorMsg = 'Client side error';
+      window.alert(errorMsg);
+    } else {
+      errorMsg = 'Server side error: ';
+      window.alert(errorMsg + error.message);
+    }
+    console.error(error.message);
+    return throwError(error.message);
+  }
 }
-
-@Injectable()
-export class ListService {
-  defaultEmpresa: Empresa = {
-    nomeFantasia: null,
-    uf: 'UF',
-    cnpj: null,
-  };
-  listToSync: Empresa[] = [this.defaultEmpresa];
-
-  private _service: EmpresaService;
-  observableSubject = new BehaviorSubject<Empresa[]>(this.listToSync);
-
-  constructor(empresaService: EmpresaService) {
-    this._service = empresaService;
-    this._service.getAll().subscribe((f) => (this.listToSync = f));
-    this._service.getAll().subscribe((f) => this.observableSubject.next(f));
-  }
-
-  addEmpresa(empresa: Empresa) {
-    this.listToSync.push(empresa);
-    this.observableSubject.next(this.listToSync);
-    console.log('add empresa:' + this.listToSync.length);
-  }
-
-  //private _message = new BehaviorSubject<string>('default');
-  //currentMessage = this._message.asObservable();
-  updatedEmpresas = this.observableSubject.asObservable();
-
-  updateEmpresa() {
-    this._service.getAll().subscribe((f) => this.observableSubject.next(f));
-  }
-
-  // changeMessage(message: string) {
-  //   this._message.next(message);
-  // }
-}
-/*save new: updated empresas -[object Object] listtosync- 40
-empresa.service.ts:57 add empresa:41 */
