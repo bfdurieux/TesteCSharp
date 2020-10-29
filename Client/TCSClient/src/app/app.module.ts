@@ -1,8 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -14,8 +13,13 @@ import { FornecedorFormComponent } from './fornecedor/fornecedor-form/fornecedor
 import { HomeComponent } from './home/home.component';
 import { EmpresaListService } from './empresa/empresa-list.service';
 import { PaginationComponent } from './shared/pagination/pagination.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FornecedorListService } from './fornecedor/fornecedor-list.service';
+import { DatePipe } from '@angular/common';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgxMaskModule, IConfig } from 'ngx-mask';
+
+export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
 @NgModule({
   declarations: [
@@ -34,10 +38,13 @@ import { FornecedorListService } from './fornecedor/fornecedor-list.service';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    MatProgressSpinnerModule,
+    NgbModule,
     BrowserAnimationsModule,
+    NgxMaskModule.forRoot(),
+    ReactiveFormsModule,
+    FormsModule,
   ],
-  providers: [EmpresaListService, FornecedorListService],
+  providers: [EmpresaListService, FornecedorListService, DatePipe],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

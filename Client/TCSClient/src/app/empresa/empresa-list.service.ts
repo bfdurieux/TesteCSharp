@@ -16,9 +16,9 @@ export class EmpresaListService {
   observableSubject = new BehaviorSubject<Empresa[]>(this.empresas);
   empresaSubject = new BehaviorSubject<Empresa>(this.defaultEmpresa);
   currentEmpresa = this.empresaSubject.asObservable();
-  observableUpdateFlag = new BehaviorSubject<Boolean>(false);
   disablePageNextButton = new BehaviorSubject<boolean>(false);
   disablePagePrevButton = new BehaviorSubject<boolean>(false);
+  observableUpdateFlag = new BehaviorSubject<Boolean>(false);
   isUpdate = this.observableUpdateFlag.asObservable();
   // currentNextBtnStatus = this.disablePageNextButton.asObservable();
   // currentPrevBtnStatus = this.disablePagePrevButton.asObservable();
@@ -29,8 +29,9 @@ export class EmpresaListService {
     this._service.getAll().subscribe((f) => this.observableSubject.next(f));
   }
 
-  getEmpresaById(id: number) {
-    this._service.getById(id).subscribe((f) => console.log(f));
+  getEmpresaById(id: number): Empresa{
+    this._service.getById(id).subscribe((f) =>{ console.log(f); return f;});
+    return this.defaultEmpresa;
   }
 
   addEmpresa(empresa: Empresa) {
@@ -73,4 +74,26 @@ export class EmpresaListService {
     this.disablePagePrevButton.next(status);
     this.disablePagePrevButton.subscribe((f) => console.log(f));
   }
+
+  setIsUpdate(state: boolean) {
+    this.observableUpdateFlag.next(state);
+  }
+
+  // getEmpresaIdByName(name: string): number {
+  //   var id: number;
+  //   var emp: Empresa;
+  //   this._service.getAll().subscribe(
+  //     (f) =>
+  //       (emp = f.find((q) => {
+  //         q.nomeFantasia == name;
+  //         id = q.id;
+  //       }))
+  //   );
+  //   this._service.getAll().subscribe((f) => this.observableSubject.next(f));
+  //   id = emp.id;
+  //   console.log(
+  //     'hey buddy, getempresaidbyname here to show you this cool id: ' + id
+  //   );
+  //   return 0;
+  // }
 }

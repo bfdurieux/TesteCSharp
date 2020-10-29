@@ -1,1 +1,151 @@
-<p>fornecedor-form works!</p>
+<div
+  class="modal-header bg-primary text-white"
+  style="border-radius: 0.3rem 0.3rem 0 0"
+>
+  <h4 class="modal-title">Novo Fornecedor</h4>
+  <button
+    type="button"
+    class="close btn-outline-dark"
+    aria-label="Close"
+    (click)="activeModal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<form ngForm>
+  <div class="modal-body modal-dark input-group align-items-center">
+    <div class="container">
+      <div class="col">
+        <input
+          type="text"
+          class="form-control"
+          ngbAutoFocus
+          placeholder="Nome"
+          value="{{ fornecedor.nome }}"
+          [(ngModel)]="fornecedor.nome"
+          name="nome"
+        /><div *ngIf="nameIsValid == false">
+          <ngb-alert type='danger' [dismissible]="true">
+            Name is an obligatory field.
+         </ngb-alert>
+         </div>
+
+        <!-- <label for="empresa" style="padding-top: 10px">Empresa: </label> -->
+        <select
+          class="form-control mt-1"
+          id="cbEmpresas"
+          name="empresa"
+          
+          (ngModel)="(empresas)"
+          [formControl]="empresaName"
+        >
+          <option selected>{{ empresaName.value }}</option>
+          <option *ngFor="let emp of empresas" [ngValue]="emp">
+            {{ emp.nomeFantasia }}
+          </option>
+        </select>
+        <div *ngIf="empresaIsValid == false">
+          <ngb-alert type='danger' [dismissible]="true">
+            You must select an Empresa.
+         </ngb-alert>
+         </div>
+
+        <input
+          type="text"
+          class="form-control mt-1"
+          placeholder="CPF ou CNPJ"
+          value="{{ fornecedor.numeroRegistro }}"
+          [(ngModel)]="fornecedor.numeroRegistro"
+          name="registro"
+          [dropSpecialCharacters]="true"
+          mask="000.000.000-00||00.000.000/0000-00"
+        />
+        <div *ngIf="registroIsValid == false">
+          <ngb-alert type='danger' [dismissible]="true">
+            Registro must have exactly 11 or 14 numeric characters.
+         </ngb-alert>
+        </div>
+
+        <input
+          type="text"
+          class="form-control mt-1"
+          placeholder="RG"
+          value="{{ fornecedor.rg }}"
+          [(ngModel)]="fornecedor.rg"
+          name="rg"
+        />
+
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control mt-1"
+            value="{{ fornecedor.dataNascimento | date }}"
+            name="dataNascimento"
+            placeholder="Data Nascimento"
+            [(ngModel)]="model"
+            ngbDatepicker
+            #d="ngbDatepicker"
+            onload="d.navigateTo(date)"
+            minDate="minDateStruct"
+            maxDate="maxDateStruct"
+          />
+          <button
+            class="btn btn-light calendar mt-1"
+            (click)="d.toggle()"
+            type="button"
+          ></button>
+        </div>
+        <div *ngIf="dataNascimentoIsValid == false">
+          <ngb-alert type='danger' [dismissible]="true">
+            {{ dataNascimentoMessage }}
+         </ngb-alert>
+         </div>
+
+        <span class="mt-1">Registered Phone Numbers:</span>
+        <ul *ngFor="let tel of telephoneList">
+          <li>{{ tel.numeroTelefone }} {{ tel.id }}</li>
+        </ul>
+
+        <input
+          type="text"
+          class="form-control mt-1"
+          value="(47) "
+          [(ngModel)]="modelTel"
+          name="telephone"
+          placeholder="Phone Number"
+          mask="(00) 00000-0000"
+        />
+        <button
+          type="button"
+          class="btn btn-primary btn-sm mt-2"
+          (click)="addPhone()"
+        >
+          Add
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer modal-dark pt-0">
+    <button
+      type="button"
+      class="btn btn-secondary btn-sm"
+      (click)="activeModal.close('Close click')"
+    >
+      Close
+    </button>
+    <button type="button" class="btn btn-primary btn-sm" (click)="saveNew()">
+      Save
+    </button>
+    <div>
+      <div *ngIf="isUpdate">
+      <button
+        type="button"
+        class="btn btn-danger btn-sm"
+        (click)="deleteEntry()"
+      >
+        Delete
+      </button></div>
+    </div>
+  </div>
+</form>

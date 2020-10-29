@@ -20,11 +20,14 @@ export class EmpresaComponent implements OnInit {
   perPage = 10;
   page = 1;
   countPages: number;
-  isLoading: boolean;
+  //isLoading: boolean;
   //observableEmpresas: BehaviorSubject<Empresa[]>;
   error: any;
 
-  constructor(private modalService: NgbModal, listService: EmpresaListService) {
+  constructor(
+    private _modalService: NgbModal,
+    listService: EmpresaListService
+  ) {
     this._listService = listService;
   }
 
@@ -45,7 +48,7 @@ export class EmpresaComponent implements OnInit {
     this._listService.empresaSubject.next(this.empresa);
     this._listService.empresaSubject.subscribe((f) => console.log(f));
     this._listService.observableUpdateFlag.next(false);
-    this.modalService.open(EmpresaFormComponent, { centered: true });
+    this._modalService.open(EmpresaFormComponent, { centered: true });
   }
 
   openEditCard(empresa: Empresa) {
@@ -53,7 +56,7 @@ export class EmpresaComponent implements OnInit {
     if (empresa != null) {
       this._listService.setEmpresa(empresa);
     }
-    this.modalService.open(EmpresaFormComponent, { centered: true });
+    this._modalService.open(EmpresaFormComponent, { centered: true });
   }
 
   goToPrevious() {
@@ -82,5 +85,17 @@ export class EmpresaComponent implements OnInit {
     this.empresas = empresas.slice(head, tail);
     console.log(this.empresas);
     return tail == this.countEmpresas;
+  }
+
+  isNew() {
+    console.log('new was called');
+
+    this._listService.observableUpdateFlag.next(false);
+  }
+
+  isUpdate() {
+    console.log('update was called');
+    this._listService.observableUpdateFlag.next(true);
+    this._listService.observableUpdateFlag.subscribe((f) => console.log(f));
   }
 }

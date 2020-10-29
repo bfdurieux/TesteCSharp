@@ -19,7 +19,13 @@ namespace TesteCSharp
         {
             services.AddDbContext<TCSContext>(options => options.UseSqlServer("Data Source=DESKTOP-G42VCB5\\SQLEXPRESS;Integrated Security=true;Initial Catalog=TCSDB"));
             services.AddControllers();
-            services.AddCors();
+            services.AddCors(options => options.AddPolicy("Cors", builder =>
+            {
+                builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+            }));
         }
 
         public void Configure(IApplicationBuilder app, IHostEnvironment env)
@@ -29,7 +35,7 @@ namespace TesteCSharp
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+            app.UseCors("Cors");
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {

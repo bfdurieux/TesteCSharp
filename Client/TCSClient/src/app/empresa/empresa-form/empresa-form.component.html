@@ -1,6 +1,6 @@
 <div
   class="modal-header bg-primary text-white"
-  style="border-radius: 0.3rem 0.3rem 0 0;"
+  style="border-radius: 0.3rem 0.3rem 0 0"
 >
   <h4 class="modal-title">Nova Empresa</h4>
   <button
@@ -28,6 +28,7 @@
       <option selected>{{ empresa.uf }}</option>
       <option *ngFor="let uf of ufList" [value]="uf">{{ uf }}</option>
     </select>
+
     <input
       type="text"
       class="form-control"
@@ -48,8 +49,14 @@
     <button type="button" class="btn btn-primary btn-sm" (click)="saveNew()">
       Save
     </button>
-    <button type="button" class="btn btn-danger btn-sm" (click)="deleteEntry()">
-      Delete
-    </button>
+    <div *ngIf="isUpdate">
+      <button
+        type="button"
+        class="btn btn-danger btn-sm"
+        (click)="deleteEntry()"
+      >
+        Delete
+      </button>
+    </div>
   </div>
 </form>

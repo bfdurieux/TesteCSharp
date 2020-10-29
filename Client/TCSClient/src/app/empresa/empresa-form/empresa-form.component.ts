@@ -44,20 +44,20 @@ export class EmpresaFormComponent implements OnInit {
     );
     this._listService.currentEmpresa.subscribe((f) => {
       this.empresa = f;
-      console.log('on init of form: ' + f.nomeFantasia + f.id);
     });
+    this._listService.observableUpdateFlag.subscribe(
+      (f) => (this.isUpdate = f)
+    );
   }
 
   //if find() != null {update()} else {post()}
   saveNew() {
     console.log(this.empresa.id);
-    this._listService.isUpdate.subscribe((f) => (this.isUpdate = f));
+    this._listService.observableUpdateFlag.subscribe(
+      (f) => (this.isUpdate = f)
+    );
     if (!this.isUpdate) {
       this._empresaService.post(this.empresa).subscribe((f) => {
-        // this.empresa.uf = f.uf;
-        // this.empresa.cnpj = f.cnpj;
-        // this.empresa.nomeFantasia = f.nomeFantasia;
-        //this._listService.addEmpresa(this.empresa);
         console.log('save new:' + this._listService.observableSubject);
       });
     } else {
@@ -65,7 +65,6 @@ export class EmpresaFormComponent implements OnInit {
         this.empresa.uf = f.uf;
         this.empresa.cnpj = f.cnpj;
         this.empresa.nomeFantasia = f.nomeFantasia;
-        //this._listService.addEmpresa(this.empresa);
         console.log('save new:' + this._listService.observableSubject);
       });
     }

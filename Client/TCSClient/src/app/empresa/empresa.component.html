@@ -10,7 +10,7 @@
           <button
             type="button"
             class="btn btn-primary btn-sm"
-            (click)="openFormCard()"
+            (click)="openFormCard(); isNew()"
             data-toggle="modal"
             data-target="#exampleModalCenter"
           >
@@ -30,7 +30,7 @@
             class="btn btn-outline-secondary btn-sm"
             data-toggle="modal"
             data-target="#exampleModalCenter"
-            (click)="openEditCard(empresa)"
+            (click)="openEditCard(empresa); isUpdate()"
           >
             Edit
           </button>

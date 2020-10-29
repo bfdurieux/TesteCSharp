@@ -8,17 +8,43 @@
         <th>Data Nascimento</th>
         <th>Telefone</th>
         <th>Empresa</th>
+        <th>
+          <button class="btn btn-primary btn-sm" (click)="openFormCard()">
+            New
+          </button>
+        </th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let fornecedor of fornecedores">
         <td>{{ fornecedor.nome }}</td>
-        <td>{{ fornecedor.numeroRegistro }}</td>
+        <td>{{ fornecedor.numeroRegistro  | mask: "CPF_CNPJ"}}</td>
         <td>{{ fornecedor.rg }}</td>
         <td>{{ fornecedor.dataNascimento | date }}</td>
-        <td>{{ getTelefone(fornecedor.telefone) }}</td>
-        <td>{{ getEmpresaName(fornecedor.empresa) }}</td>
+        <td>{{ getTelefoneNumber(fornecedor.telefone) }}</td>
+        <td>{{ getEmpresaName(fornecedor.empresa).nomeFantasia }}</td>
+        <td>
+          <button
+            type="button"
+            class="btn btn-dark btn-sm"
+            (click)="
+              openEditCard(
+                fornecedor,
+                getEmpresaName(fornecedor.empresa),
+                getTelefone(fornecedor.telefone)
+              );
+              setFornecedor(fornecedor)
+            "
+          >
+            Edit
+          </button>
+        </td>
       </tr>
     </tbody>
   </table>
+  <app-pagination
+    (goPrev)="goToPrevious()"
+    (goNext)="goToNext()"
+    [page]="page"
+  ></app-pagination>
 </div>

@@ -8,7 +8,7 @@ export interface Fornecedor {
   empresaId: number;
   numeroRegistro: string;
   rg?: string;
-  dataNascimento?: Date;
-  timestampCadastro: Date;
+  dataNascimento?: string;
+  timestampCadastro: string;
   telefone: Telefone[];
 }

@@ -1,0 +1,6 @@
+{
+  "/empresa": {
+    "target": "http://localhost:5000/Empresa/All",
+    "secure": false
+  }
+}

@@ -21,7 +21,7 @@ namespace TesteCSharp.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Fornecedor>> Insert([FromBody] Fornecedor fornecedor)
+        public async Task<ActionResult<Fornecedor>> Insert(Fornecedor fornecedor)
         {
             fornecedor.Empresa = await _context.Empresas.FindAsync(fornecedor.EmpresaID);
             FornecedorFacade.CadastroIsValid(fornecedor);
@@ -65,11 +65,11 @@ namespace TesteCSharp.Controllers
             fornecedorToUpdate.Nome = fornecedor.Nome ?? fornecedorToUpdate.Nome;
             fornecedorToUpdate.NumeroRegistro = fornecedor.NumeroRegistro ?? fornecedorToUpdate.NumeroRegistro;
 
-            if (FornecedorFacade.IsPessoaFisica(fornecedorToUpdate))
-            {
+            ///if (FornecedorFacade.IsPessoaFisica(fornecedorToUpdate))
+            ///{
                 fornecedorToUpdate.DataNascimento = fornecedor.DataNascimento ?? fornecedorToUpdate.DataNascimento;
                 fornecedorToUpdate.RG = fornecedor.RG ?? fornecedorToUpdate.RG;
-            }
+            //}
             FornecedorFacade.CadastroIsValid(fornecedorToUpdate);
 
             Telefone currTel = new Telefone();
